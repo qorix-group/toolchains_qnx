@@ -10,6 +10,7 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
+
 load("@bazel_tools//tools/build_defs/cc:action_names.bzl", "ACTION_NAMES")
 load(
     "@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
@@ -99,24 +100,9 @@ def _impl(ctx):
         flag_sets = [
             flag_set(
                 flag_groups = [
-                    flag_group(
-                        flags = [
-                            "-S",
-                            "-p",
-                            "--strip-all",
-                        ],
-                    ),
-                    flag_group(
-                        iterate_over = "stripopts",
-                        flags = ["%{stripopts}"],
-                    ),
-                    flag_group(
-                        flags = [
-                            "-o",
-                            "%{output_file}",
-                            "%{input_file}",
-                        ],
-                    ),
+                    flag_group(flags = ["-S", "-p", "--strip-all"]),
+                    flag_group(iterate_over = "stripopts", flags = ["%{stripopts}"]),
+                    flag_group(flags = ["-o", "%{output_file}", "%{input_file}"]),
                 ],
             ),
         ],
@@ -141,14 +127,12 @@ def _impl(ctx):
             flag_set(
                 actions = all_c_compile_actions + all_cpp_compile_actions,
                 flag_groups = [
-                    flag_group(
-                        flags = [
-                            "-D__DATE__=\"redacted\"",
-                            "-D__TIMESTAMP__=\"redacted\"",
-                            "-D__TIME__=\"redacted\"",
-                            "-Wno-builtin-macro-redefined",
-                        ],
-                    ),
+                    flag_group(flags = [
+                        "-D__DATE__=\"redacted\"",
+                        "-D__TIMESTAMP__=\"redacted\"",
+                        "-D__TIME__=\"redacted\"",
+                        "-Wno-builtin-macro-redefined",
+                    ]),
                 ],
             ),
         ],
@@ -161,59 +145,30 @@ def _impl(ctx):
             flag_set(
                 actions = all_compile_actions,
                 flag_groups = [
-                    flag_group(
-                        flags = [
-                            "-V8.3.0,gcc_ntox86_64_gpp",
-                            "-fno-canonical-system-headers",
-                        ],
-                    ),
+                    flag_group(flags = [
+                        # NOTE: aarch64 QNX 7.1 compiler triple
+                        "-V8.3.0,gcc_ntoaarch64le_gpp",
+                        "-fno-canonical-system-headers",
+                    ]),
                 ],
             ),
             flag_set(
                 actions = all_cpp_compile_actions,
-                flag_groups = [
-                    flag_group(
-                        flags = [
-                            "-std=c++17",
-                        ],
-                    ),
-                ],
-                with_features = [
-                    with_feature_set(not_features = ["c++17", "c++20"]),
-                ],
+                flag_groups = [flag_group(flags = ["-std=c++17"])],
+                with_features = [with_feature_set(not_features = ["c++17", "c++20"])],
             ),
             flag_set(
                 actions = all_c_compile_actions,
-                flag_groups = [
-                    flag_group(
-                        flags = [
-                            "-std=c11",
-                        ],
-                    ),
-                ],
+                flag_groups = [flag_group(flags = ["-std=c11"])],
             ),
             flag_set(
                 actions = all_compile_actions,
-                flag_groups = [
-                    flag_group(
-                        flags = [
-                            "-Og",
-                            "-g3",
-                        ],
-                    ),
-                ],
+                flag_groups = [flag_group(flags = ["-Og", "-g3"])],
                 with_features = [with_feature_set(features = ["dbg"])],
             ),
             flag_set(
                 actions = all_compile_actions,
-                flag_groups = [
-                    flag_group(
-                        flags = [
-                            "-O2",
-                            "-DNDEBUG",
-                        ],
-                    ),
-                ],
+                flag_groups = [flag_group(flags = ["-O2", "-DNDEBUG"])],
                 with_features = [with_feature_set(features = ["opt"])],
             ),
         ],
@@ -227,13 +182,14 @@ def _impl(ctx):
                 actions = all_link_actions,
                 flag_groups = [
                     flag_group(flags = [
+                        "-V8.3.0,gcc_ntoaarch64le_gpp",
                         "-Wl,-z,relro",
                         "-Wl,-z,now",
                         "-Wl,--push-state",
                         "-Wl,--as-needed",
                         "-lstdc++",
                         "-lm",
-                        #"-lpthread",
+                        # Do NOT force -lpthread/-lrt; let qcc/nto provide the right libs per target
                         "-Wl,--pop-state",
                     ]),
                 ],
@@ -247,17 +203,8 @@ def _impl(ctx):
         flag_sets = [
             flag_set(
                 actions = all_compile_actions,
-                flag_groups = [
-                    flag_group(
-                        flags = [
-                            "-Wall",
-                            "-Wno-error=deprecated-declarations",
-                        ],
-                    ),
-                ],
-                with_features = [
-                    with_feature_set(not_features = ["third_party_warnings"]),
-                ],
+                flag_groups = [flag_group(flags = ["-Wall", "-Wno-error=deprecated-declarations"])],
+                with_features = [with_feature_set(not_features = ["third_party_warnings"])],
             ),
         ],
     )
@@ -268,31 +215,8 @@ def _impl(ctx):
         flag_sets = [
             flag_set(
                 actions = all_compile_actions,
-                flag_groups = [
-                    flag_group(
-                        flags = [
-                            "-Wextra",
-                            "-Wpedantic",
-                        ],
-                    ),
-                ],
-                with_features = [
-                    with_feature_set(not_features = ["third_party_warnings"]),
-                ],
-            ),
-            flag_set(
-                actions = all_cpp_compile_actions,
-                flag_groups = [],
-                with_features = [
-                    with_feature_set(not_features = ["third_party_warnings"]),
-                ],
-            ),
-            flag_set(
-                actions = all_c_compile_actions,
-                flag_groups = [],
-                with_features = [
-                    with_feature_set(not_features = ["third_party_warnings"]),
-                ],
+                flag_groups = [flag_group(flags = ["-Wextra", "-Wpedantic"])],
+                with_features = [with_feature_set(not_features = ["third_party_warnings"])],
             ),
         ],
     )
@@ -303,54 +227,24 @@ def _impl(ctx):
         flag_sets = [
             flag_set(
                 actions = all_compile_actions,
-                flag_groups = [
-                    flag_group(
-                        flags = [
-                            "-Werror",
-                        ],
-                    ),
-                ],
-                with_features = [
-                    with_feature_set(not_features = ["third_party_warnings"]),
-                ],
+                flag_groups = [flag_group(flags = ["-Werror"])],
+                with_features = [with_feature_set(not_features = ["third_party_warnings"])],
             ),
         ],
     )
 
-    third_party_warnings_feature = feature(
-        name = "third_party_warnings",
-        flag_sets = [
-            flag_set(
-                actions = all_compile_actions,
-                flag_groups = [],
-            ),
-        ],
-    )
+    third_party_warnings_feature = feature(name = "third_party_warnings")
 
     cxx17_feature = feature(
         name = "c++17",
         provides = ["cxx_std"],
-        flag_sets = [
-            flag_set(
-                actions = all_cpp_compile_actions,
-                flag_groups = [
-                    flag_group(flags = ["-std=c++17"]),
-                ],
-            ),
-        ],
+        flag_sets = [flag_set(actions = all_cpp_compile_actions, flag_groups = [flag_group(flags = ["-std=c++17"])])],
     )
 
     cxx20_feature = feature(
         name = "c++20",
         provides = ["cxx_std"],
-        flag_sets = [
-            flag_set(
-                actions = all_cpp_compile_actions,
-                flag_groups = [
-                    flag_group(flags = ["-std=c++20"]),
-                ],
-            ),
-        ],
+        flag_sets = [flag_set(actions = all_cpp_compile_actions, flag_groups = [flag_group(flags = ["-std=c++20"])])],
     )
 
     supports_pic_feature = feature(name = "supports_pic", enabled = True)
@@ -380,9 +274,7 @@ def _impl(ctx):
                     "-Wc,-MD,%{dependency_file}",
                     "-Wp,-MD,%{dependency_file}",
                 ])],
-                with_features = [
-                    with_feature_set(not_features = ["dependency_file_named_implicitly"]),
-                ],
+                with_features = [with_feature_set(not_features = ["dependency_file_named_implicitly"])],
             ),
             flag_set(
                 actions = [
@@ -396,13 +288,8 @@ def _impl(ctx):
                     ACTION_NAMES.cpp_header_parsing,
                     ACTION_NAMES.clif_match,
                 ],
-                flag_groups = [flag_group(flags = [
-                    "-Wc,-MD",
-                    "-Wp,-MD",
-                ])],
-                with_features = [
-                    with_feature_set(features = ["dependency_file_named_implicitly"]),
-                ],
+                flag_groups = [flag_group(flags = ["-Wc,-MD", "-Wp,-MD"])],
+                with_features = [with_feature_set(features = ["dependency_file_named_implicitly"])],
             ),
         ],
     )
@@ -418,6 +305,7 @@ def _impl(ctx):
                     env_entry(key = "QNX_TARGET", value = "/proc/self/cwd/" + ctx.file.qnx_target.path),
                     env_entry(key = "QNX_CONFIGURATION_EXCLUSIVE", value = "/var/tmp/.qnx"),
                     env_entry(key = "QNX_SHARED_LICENSE_FILE", value = "/opt/score_qnx/license/licenses"),
+                    # adjust if your license server differs:
                     env_entry(key = "QNXLM_LICENSE_FILE", value = "27000@10.56.17.4"),
                 ],
             ),
@@ -443,26 +331,25 @@ def _impl(ctx):
     ]
 
     cxx_builtin_include_directories = [
-        "/proc/self/cwd/{}".format(include_directory.path)
-        for include_directory in ctx.files.cxx_builtin_include_directories
+        "/proc/self/cwd/{}".format(d.path) for d in ctx.files.cxx_builtin_include_directories
     ]
 
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
-        abi_version = "x86_64-qnx7.1.0",
+        abi_version = "aarch64-qnx7.1.0",
         abi_libc_version = "unknown",
         compiler = "qcc",
         cxx_builtin_include_directories = cxx_builtin_include_directories,
         features = features,
         action_configs = action_configs,
         host_system_name = "local",
-        target_system_name = "x86_64-qnx",
-        target_cpu = "x86_64",
+        target_system_name = "aarch64-qnx",
+        target_cpu = "aarch64",
         target_libc = "unknown",
-        toolchain_identifier = "x86_64-qnx7.1.0",
+        toolchain_identifier = "aarch64-qnx7.1.0",
     )
 
-cc_toolchain_config = rule(
+cc_toolchain_config_aarch64 = rule(
     implementation = _impl,
     provides = [CcToolchainConfigInfo],
     attrs = {

@@ -10,18 +10,31 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
+# rules.bzl
+# *******************************************************************************
+# Copyright (c) 2025 Contributors to the Eclipse Foundation
+# SPDX-License-Identifier: Apache-2.0
+# *******************************************************************************
+
 def _qcc_toolchain_impl(rctx):
+    # Emit the BUILD file (templated toolchain.BUILD expects both configs)
     rctx.template(
         "BUILD",
-        rctx.attr._cc_tolchain_build,
-        {
-            "%{toolchain_sdp}": rctx.attr.sdp_repo,
-        },
+        rctx.attr._cc_toolchain_build,
+        {"%{toolchain_sdp}": rctx.attr.sdp_repo},
     )
 
+    # x86_64 config .bzl
     rctx.template(
         "cc_toolchain_config.bzl",
         rctx.attr._cc_toolchain_config_bzl,
+        {},
+    )
+
+    # aarch64 config .bzl
+    rctx.template(
+        "cc_toolchain_config_aarch64.bzl",
+        rctx.attr._cc_toolchain_config_aarch64_bzl,
         {},
     )
 
@@ -32,7 +45,10 @@ qcc_toolchain = repository_rule(
         "_cc_toolchain_config_bzl": attr.label(
             default = "//toolchains/qcc:cc_toolchain_config.bzl",
         ),
-        "_cc_tolchain_build": attr.label(
+        "_cc_toolchain_config_aarch64_bzl": attr.label(
+            default = "//toolchains/qcc:cc_toolchain_config_aarch64.bzl",
+        ),
+        "_cc_toolchain_build": attr.label(
             default = "//toolchains/qcc:toolchain.BUILD",
         ),
     },
@@ -41,17 +57,15 @@ qcc_toolchain = repository_rule(
 def _ifs_toolchain_impl(rctx):
     rctx.template(
         "BUILD",
-        rctx.attr._ifs_tolchain_build,
-        {
-            "%{toolchain_sdp}": rctx.attr.sdp_repo,
-        },
+        rctx.attr._ifs_toolchain_build,
+        {"%{toolchain_sdp}": rctx.attr.sdp_repo},
     )
 
 ifs_toolchain = repository_rule(
     implementation = _ifs_toolchain_impl,
     attrs = {
         "sdp_repo": attr.string(),
-        "_ifs_tolchain_build": attr.label(
+        "_ifs_toolchain_build": attr.label(
             default = "//toolchains/fs/ifs:ifs.BUILD",
         ),
     },

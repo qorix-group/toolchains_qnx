@@ -22,15 +22,24 @@ filegroup(
 filegroup(
     name = "cxx_builtin_include_directories",
     srcs = [
-        "host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx8.0.0/12.2.0/include",
-        "target/qnx/usr/include",
-        "target/qnx/usr/include/c++/v1",
+        # GCC internal headers
+        "host/linux/x86_64/usr/lib/gcc/x86_64-pc-nto-qnx7.1.0/8.3.0/include",
+
+        # System headers
+        "target/qnx7/usr/include",
+
+        # C++ standard library headers
+        "target/qnx7/usr/include/c++/8.3.0",
+        "target/qnx7/usr/include/c++/8.3.0/x86_64-pc-nto-qnx7.1.0",
+
+        # QNX C library headers (POSIX, libc)
+        "target/qnx7/usr/include/posix",
     ],
 )
 
 filegroup(
     name = "ar",
-    srcs = ["host/linux/x86_64/usr/bin/x86_64-pc-nto-qnx8.0.0-ar"],
+    srcs = ["host/linux/x86_64/usr/bin/x86_64-pc-nto-qnx7.1.0-ar"],
 )
 
 filegroup(
@@ -45,7 +54,7 @@ filegroup(
 
 filegroup(
     name = "strip",
-    srcs = ["host/linux/x86_64/usr/bin/x86_64-pc-nto-qnx8.0.0-strip"],
+    srcs = ["host/linux/x86_64/usr/bin/x86_64-pc-nto-qnx7.1.0-strip"],
 )
 
 filegroup(
@@ -65,7 +74,7 @@ filegroup(
 
 filegroup(
     name = "target_dir",
-    srcs = ["target/qnx"],
+    srcs = ["target/qnx7"],
 )
 
 filegroup(

@@ -12,5 +12,6 @@
 # *******************************************************************************
 exports_files([
     "cc_toolchain_config.bzl",
+    "cc_toolchain_config_aarch64.bzl",
     "toolchain.BUILD",
 ])

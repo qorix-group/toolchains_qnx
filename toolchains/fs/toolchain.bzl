@@ -25,6 +25,7 @@ def _impl(ctx):
         "QNX_TARGET": "/proc/self/cwd/" + ctx.file.target_dir.path,
         "QNX_CONFIGURATION_EXCLUSIVE": "/var/tmp/.qnx",
         "QNX_SHARED_LICENSE_FILE": "/opt/score_qnx/license/licenses",
+        "QNXLM_LICENSE_FILE": "27000@10.56.17.4",
         "PATH": "/proc/self/cwd/" + ctx.file.host_dir.path + "/usr/bin",
     }
 
