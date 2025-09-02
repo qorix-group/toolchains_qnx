@@ -69,7 +69,7 @@ filegroup(
 
 filegroup(
     name = "target_all",
-    srcs = glob(["target/qnx/**/*"]),
+    srcs = glob(["target/qnx7/**/*"]),
 )
 
 filegroup(
