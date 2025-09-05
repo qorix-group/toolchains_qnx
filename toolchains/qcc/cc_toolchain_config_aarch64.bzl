@@ -154,12 +154,12 @@ def _impl(ctx):
             ),
             flag_set(
                 actions = all_cpp_compile_actions,
-                flag_groups = [flag_group(flags = ["-std=c++17"])],
+                flag_groups = [flag_group(flags = ["-std=c++17","-D_QNX_SOURCE","-D_FORTIFY_SOURCE=2"])],
                 with_features = [with_feature_set(not_features = ["c++17", "c++20"])],
             ),
             flag_set(
                 actions = all_c_compile_actions,
-                flag_groups = [flag_group(flags = ["-std=c11"])],
+                flag_groups = [flag_group(flags = ["-std=c11","-D_QNX_SOURCE","-D_FORTIFY_SOURCE=2"])],
             ),
             flag_set(
                 actions = all_compile_actions,
