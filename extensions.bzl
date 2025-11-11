@@ -24,10 +24,15 @@ def _impl(mctx):
             sha256 = sdp.sha256
             strip_prefix = sdp.strip_prefix
 
+            if sdp.arch == "aarch64":
+                build_file = "@score_toolchains_qnx//toolchains:sdp_aarch64.BUILD"
+            else:
+                build_file = "@score_toolchains_linux//toolchains:sdp.BUILD"
+
             http_archive(
                 name = "%s_sdp" % name,
                 urls = [url],
-                build_file = "@score_toolchains_qnx//toolchains:sdp.BUILD",
+                build_file = build_file,
                 sha256 = sha256,
                 strip_prefix = strip_prefix,
             )
@@ -51,6 +56,10 @@ toolchains_qnx = module_extension(
                 "url": attr.string(mandatory = True),
                 "strip_prefix": attr.string(default = ""),
                 "sha256": attr.string(mandatory = True),
+                
+                "arch": attr.string(mandatory = True, default = "x86_64", # Keep default to not break existing usage
+                        values = ["aarch64", "x86_64"],
+                        doc = "Architecture must be one of: aarch64, x86_64"),
             },
         ),
     },
