@@ -274,7 +274,7 @@ def _impl(ctx):
                         flags = [
                             "-Wall",
                             "-Wno-error=deprecated-declarations",
-                            "-Wno-error=mismatched-new-delete",  # see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=103993
+                            # "-Wno-error=mismatched-new-delete",  # see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=103993
                         ],
                     ),
                 ],
@@ -474,7 +474,7 @@ def _impl(ctx):
 
     return cc_common.create_cc_toolchain_config_info(
         ctx = ctx,
-        abi_version = "%s-qnx8.0.0" % arch,
+        abi_version = "%s-%s.0.0" % (arch, ctx.attr.extension_qnx_prefix),
         abi_libc_version = "unknown",
         compiler = "qcc",
         cxx_builtin_include_directories = cxx_builtin_include_directories,
@@ -484,7 +484,8 @@ def _impl(ctx):
         target_system_name = "%s-qnx" % arch,
         target_cpu = arch,
         target_libc = "unknown",
-        toolchain_identifier = "%s-qnx8.0.0" % arch,
+        toolchain_identifier = "%s-%s.0.0" % (arch, ctx.attr.extension_qnx_prefix),
+
     )
 
 cc_toolchain_config = rule(
@@ -503,5 +504,6 @@ cc_toolchain_config = rule(
         "qcc_version": attr.string(default = "12.2.0"),
         "gcc_variant": attr.string(mandatory = True),
         "gcc_variant_cxx": attr.string(mandatory = True),
+        "extension_qnx_prefix": attr.string( default = "qnx8"), 
     },
 )
