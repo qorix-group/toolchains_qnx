@@ -13,7 +13,7 @@
 def _qcc_toolchain_impl(rctx):
     rctx.template(
         "BUILD",
-        rctx.attr._cc_tolchain_build,
+        rctx.attr.cc_tolchain_build,
         {
             "%{toolchain_sdp}": rctx.attr.sdp_repo,
         },
@@ -21,7 +21,7 @@ def _qcc_toolchain_impl(rctx):
 
     rctx.template(
         "cc_toolchain_config.bzl",
-        rctx.attr._cc_toolchain_config_bzl,
+        rctx.attr.cc_toolchain_config_bzl,
         {},
     )
 
@@ -29,10 +29,10 @@ qcc_toolchain = repository_rule(
     implementation = _qcc_toolchain_impl,
     attrs = {
         "sdp_repo": attr.string(),
-        "_cc_toolchain_config_bzl": attr.label(
+        "cc_toolchain_config_bzl": attr.label(
             default = "//toolchains/qcc:cc_toolchain_config.bzl",
         ),
-        "_cc_tolchain_build": attr.label(
+        "cc_tolchain_build": attr.label(
             default = "//toolchains/qcc:toolchain.BUILD",
         ),
     },
@@ -41,7 +41,7 @@ qcc_toolchain = repository_rule(
 def _ifs_toolchain_impl(rctx):
     rctx.template(
         "BUILD",
-        rctx.attr._ifs_tolchain_build,
+        rctx.attr.ifs_tolchain_build,
         {
             "%{toolchain_sdp}": rctx.attr.sdp_repo,
         },
@@ -51,7 +51,7 @@ ifs_toolchain = repository_rule(
     implementation = _ifs_toolchain_impl,
     attrs = {
         "sdp_repo": attr.string(),
-        "_ifs_tolchain_build": attr.label(
+        "ifs_tolchain_build": attr.label(
             default = "//toolchains/fs/ifs:ifs.BUILD",
         ),
     },

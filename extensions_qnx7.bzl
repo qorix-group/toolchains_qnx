@@ -16,7 +16,7 @@ load("//toolchains:rules.bzl", "ifs_toolchain", "qcc_toolchain")
 def _impl(mctx):
     for mod in mctx.modules:
         if not mod.is_root:
-            fail("Only the root module can use the 'toolchains_qnx' extension")
+            fail("Only the root module can use the 'toolchains_qnx7' extension")
 
         for sdp in mod.tags.sdp:
             name = sdp.name
@@ -27,7 +27,7 @@ def _impl(mctx):
             http_archive(
                 name = "%s_sdp" % name,
                 urls = [url],
-                build_file = "@score_toolchains_qnx//toolchains:sdp.BUILD",
+                build_file = "@score_toolchains_qnx//toolchains:sdp_qnx7.BUILD",
                 sha256 = sha256,
                 strip_prefix = strip_prefix,
             )
@@ -35,6 +35,8 @@ def _impl(mctx):
             qcc_toolchain(
                 name = "%s_qcc" % name,
                 sdp_repo = "%s_sdp" % name,
+                cc_toolchain_config_bzl = "@score_toolchains_qnx//toolchains/qcc:cc_toolchain_config_qnx7.bzl",
+                cc_tolchain_build = "@score_toolchains_qnx//toolchains/qcc:toolchain_qnx7.BUILD",
             )
 
             ifs_toolchain(
@@ -42,12 +44,12 @@ def _impl(mctx):
                 sdp_repo = "%s_sdp" % name,
             )
 
-toolchains_qnx = module_extension(
+toolchains_qnx7= module_extension(
     implementation = _impl,
     tag_classes = {
         "sdp": tag_class(
             attrs = {
-                "name": attr.string(default = "toolchains_qnx"),
+                "name": attr.string(default = "toolchains_qnx7"),
                 "url": attr.string(mandatory = True),
                 "strip_prefix": attr.string(default = ""),
                 "sha256": attr.string(mandatory = True),

@@ -11,6 +11,8 @@
 # SPDX-License-Identifier: Apache-2.0
 # *******************************************************************************
 exports_files([
-    "cc_toolchain_config.bzl",
+    "cc_toolchain_configs.bzl",
+    "cc_toolchain_config_qnx7.bzl",
     "toolchain.BUILD",
+    "toolchain_qnx7.BUILD",
 ])
