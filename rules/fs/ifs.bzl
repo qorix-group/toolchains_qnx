@@ -77,6 +77,8 @@ def _qnx_ifs_impl(ctx):
     for key, item in ctx.attr.ext_repo_maping.items():
         env_to_append.update({key: ctx.expand_location(item)})
 
+    env_to_append.update({"MAIN_BUILD_FILE_DIR": main_build_file.dirname})
+
     # Unpack tarballs and add locations as env variables
     for key, tarball in ctx.attr.tars.items():
         unpacked_tarball = ctx.actions.declare_directory("{}_{}".format(ctx.attr.name, key))
