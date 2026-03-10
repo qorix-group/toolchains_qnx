@@ -1,5 +1,9 @@
 # Bazel toolchains for QNX
 
+> [!WARNING]
+> **Deprecated:** This repository should not be used anymore.
+> Starting with `v0.6`, use `https://github.com/eclipse-score/bazel_cpp_toolchains` instead.
+
 This module implements support for [QNX SDP 8.0](https://www.qnx.com/products/everywhere/index.html) and QNX SDP 7.1.
 
 ## Usage
